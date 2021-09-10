@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.movie.dao.UserDao">
+    <resultMap id="s1-user" type="com.movie.domain.User">
+        <result property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+        <result property="userAge" column="user_age" />
+        <result property="userSex" column="user_sex" />
+        <result property="loginName" column="login_name" />
+        <result property="loginPassword" column="login_password" />
+        <result property="birthdate" column="birthdate" />
+        <result property="imgPath" column="img_path" />
+        <result property="isDelete" column="is_delete" />
+    </resultMap>
+
+    <select id="getUserByLoginName" resultMap="s1-user">
+        SELECT user_id,user_name,user_age,user_sex,login_name,login_password,birthdate,img_path,is_delete
+        FROM user_info
+        <where>
+            login_name = #{loginName} AND is_delete = 0
+        </where>
+    </select>
+
+    <select id="getUserByUserId" resultMap="s1-user">
+        SELECT user_id,user_name,user_age,user_sex,login_name,login_password,birthdate,img_path,is_delete
+        FROM user_info
+        <where>
+            user_id = #{userId} AND is_delete = 0
+        </where>
+    </select>
+
+    <update id="changePasswordByUserId">
+        UPDATE user_info SET login_password = #{newPsw} WHERE user_id = #{userId}
+    </update>
+
+    <update id="changeUserinfo">
+        UPDATE user_info SET user_name = #{userName}, user_age = #{userAge}, user_sex = #{userSex}, birthdate = #{birthdate}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="cancellation">
+        UPDATE user_info SET is_delete = 1 WHERE user_id = #{userId}
+    </update>
+
+    <insert id="addUser">
+        INSERT INTO user_info (
+        <if test="userId != null || userId != ''">user_id,</if>
+        <if test="userName != null || userName != ''">user_name,</if>
+        <if test="userAge != null || userAge != ''">user_age,</if>
+        <if test="userSex != null || userSex != ''">user_sex,</if>
+        <if test="loginName != null || loginName != ''">login_name,</if>
+        <if test="loginPassword != null || loginPassword != ''">login_password,</if>
+        <if test="birthdate != null || birthdate != ''">birthdate,</if>
+        <if test="imgPath != null || imgPath != ''">img_path,</if>
+        <if test="isDelete != null || isDelete != ''">is_delete</if>) VALUES(
+        <if test="userId != null || userId != ''">#{userId},</if>
+        <if test="userName != null || userName != ''">#{userName},</if>
+        <if test="userAge != null || userAge != ''">#{userAge},</if>
+        <if test="userSex != null || userSex != ''">#{userSex},</if>
+        <if test="loginName != null || loginName != ''">#{loginName},</if>
+        <if test="loginPassword != null || loginPassword != ''">#{loginPassword},</if>
+        <if test="birthdate != null || birthdate != ''">#{birthdate},</if>
+        <if test="imgPath != null || imgPath != ''">#{imgPath},</if>
+        <if test="isDelete != null || isDelete != ''">#{isDelete}</if>)
+    </insert>
+
+    <select id="checkUserId" resultType="int">
+        SELECT count(user_id) FROM user_info WHERE user_id = #{userId}
+    </select>
+</mapper>
